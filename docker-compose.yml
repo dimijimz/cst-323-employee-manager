@@ -20,8 +20,12 @@ services:
       MYSQL_USER: employee_app
       MYSQL_PASSWORD: employee_app_pw
     ports:
-      # host:container - change the host side if 3306 is already in use locally.
-      - "3306:3306"
+      # Bound to 127.0.0.1 deliberately. A bare "3306:3306" publishes on 0.0.0.0,
+      # which would expose MySQL - with the root password that is committed a few
+      # lines above - to the network on any host with a routable IP, a cloud VM
+      # included. This container is for local development only and never needs to
+      # be reachable from off the machine. Change the host port if 3306 is taken.
+      - "127.0.0.1:3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
     healthcheck:
