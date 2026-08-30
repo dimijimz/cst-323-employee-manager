@@ -4,9 +4,10 @@
 #   docker compose down       stop it, keeping the data
 #   docker compose down -v    stop it and wipe the data (Flyway reseeds on next boot)
 #
-# The credentials here are local-development only and match the defaults in
-# src/main/resources/application.properties. Cloud deployments supply their own
-# values through environment variables and never use these.
+# The credentials here are local-development only: they configure this throwaway
+# container, nothing else. The application does not read them - it has no default
+# password at all, so run it with DB_PASSWORD=employee_app_pw to match MYSQL_PASSWORD
+# below. Cloud deployments supply their own values and never use these.
 
 services:
   mysql:

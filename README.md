@@ -42,15 +42,28 @@ Maven itself is **not** required: `mvnw` / `mvnw.cmd` download it on first use.
 
 ## Quick start
 
+Start the database:
+
 ```bash
 docker compose up -d --wait
 ```
 
+Then run the app. `DB_PASSWORD` has no default, so it has to be supplied — for local
+development that is the password `docker-compose.yml` gives the container:
+
 ```bash
-./mvnw spring-boot:run
+DB_PASSWORD=employee_app_pw ./mvnw spring-boot:run
 ```
 
-On Windows `cmd` or PowerShell use `mvnw.cmd spring-boot:run` instead.
+In PowerShell:
+
+```bash
+$env:DB_PASSWORD = 'employee_app_pw'; .\mvnw.cmd spring-boot:run
+```
+
+Leaving `DB_PASSWORD` unset is not a silent failure — the app refuses to start and
+says `Could not resolve placeholder 'DB_PASSWORD'`. That is deliberate; see
+[Configuration](#configuration).
 
 Then open <http://localhost:8080>.
 
@@ -97,7 +110,7 @@ defined in `src/main/resources/application.properties`.
 | `DB_PORT`               | `3306`             | Database port                                   |
 | `DB_NAME`               | `employeedb`       | Schema name                                     |
 | `DB_USER`               | `employee_app`     | Database user                                   |
-| `DB_PASSWORD`           | `employee_app_pw`  | Database password                               |
+| `DB_PASSWORD`           | **none — required** | Database password. No fallback; unset fails at startup |
 | `DB_SSL_MODE`           | `DISABLED`         | `REQUIRED` for managed MySQL such as Azure      |
 | `DB_POOL_MAX`           | `10`               | Maximum Hikari pool size                        |
 | `DB_POOL_MIN`           | `2`                | Minimum idle connections                        |
@@ -108,10 +121,33 @@ defined in `src/main/resources/application.properties`.
 | `ACTUATOR_ENDPOINTS`    | `health,info`      | Which actuator endpoints are exposed            |
 | `ACTUATOR_HEALTH_DETAILS`| `always`          | Set `never` to hide component detail publicly   |
 
-> **The defaults are for local development only.** They match `docker-compose.yml`
-> so the app runs out of the box on a laptop. Any deployed environment must supply
-> its own `DB_USER` and `DB_PASSWORD` from the platform's secret store — Azure App
-> Service application settings, Key Vault references, container secrets, and so on.
+> **`DB_PASSWORD` has no default, on purpose.** Every other setting falls back to a
+> local development value, but a committed fallback password is a trap: a deployment
+> that forgets to set `DB_PASSWORD` would start, connect with the placeholder, and fail
+> with an opaque `Access denied for user` error that points at the database rather than
+> at the missing configuration.
+>
+> Removing the default is not sufficient by itself. Spring Boot binds
+> `spring.datasource.password` through a resolver that *ignores* unresolvable
+> placeholders, so an unset `DB_PASSWORD` is silently passed to the driver as the
+> literal string `${DB_PASSWORD}`. `RequiredDatabasePasswordValidator` closes that gap:
+> it runs as an `EnvironmentPostProcessor` before any bean is created, so startup stops
+> before Flyway or Hikari open a connection:
+>
+> ```
+> java.lang.IllegalStateException: DB_PASSWORD is not set. This application has no
+> default database password by design: a committed fallback would let a misconfigured
+> deployment start and then fail with an opaque authentication error. Set the
+> DB_PASSWORD environment variable (or pass -DDB_PASSWORD=...) before starting.
+>   Caused by: PlaceholderResolutionException: Could not resolve placeholder 'DB_PASSWORD'
+> ```
+>
+> An intentionally empty password is still allowed: set `DB_PASSWORD=` explicitly.
+>
+> Supply it from the platform's secret store — Azure App Service application settings,
+> Key Vault references, container secrets, and so on. The remaining defaults are for
+> local development only and match `docker-compose.yml`.
+>
 > `ACTUATOR_HEALTH_DETAILS=never` is also worth setting on anything public-facing,
 > since the default `always` reveals component-level health detail to anonymous callers.
 
@@ -174,10 +210,11 @@ which also renders every Thymeleaf template for real.
 ./mvnw clean package
 ```
 
-Produces a self-contained `target/employee-manager.jar`:
+Produces a self-contained `target/employee-manager.jar`, which needs the same
+environment variables as `spring-boot:run`:
 
 ```bash
-java -jar target/employee-manager.jar
+DB_PASSWORD=employee_app_pw java -jar target/employee-manager.jar
 ```
 
 ## Project layout
@@ -191,7 +228,9 @@ employee-manager/
     ├── main/
     │   ├── java/edu/gcu/cst323/employeemanager/
     │   │   ├── EmployeeManagerApplication.java
-    │   │   ├── config/DepartmentFormatter.java     dropdown <-> entity binding
+    │   │   ├── config/
+    │   │   │   ├── DepartmentFormatter.java          dropdown <-> entity binding
+    │   │   │   └── RequiredDatabasePasswordValidator.java  fail fast if DB_PASSWORD unset
     │   │   ├── controller/                          Home, Employee, Health
     │   │   ├── model/                               Department, Employee
     │   │   ├── repository/                          Spring Data JPA interfaces
