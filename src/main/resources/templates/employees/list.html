@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Employees')}"></head>
+<body class="bg-body-tertiary">
+
+<nav th:replace="~{fragments/layout :: navbar('employees')}"></nav>
+<div th:replace="~{fragments/layout :: flash}"></div>
+
+<main class="container">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h3 mb-0">Employees</h1>
+        <a class="btn btn-primary" th:href="@{/employees/new}">Add Employee</a>
+    </div>
+
+    <div th:if="${employees.isEmpty()}" class="alert alert-info">
+        No employees yet. <a th:href="@{/employees/new}" class="alert-link">Add the first one.</a>
+    </div>
+
+    <div th:unless="${employees.isEmpty()}" class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Department</th>
+                    <th scope="col">Hire Date</th>
+                    <th scope="col" class="text-end">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="employee : ${employees}">
+                    <td>
+                        <a th:href="@{/employees/{id}(id=${employee.id})}"
+                           th:text="${employee.fullName}">Jane Doe</a>
+                    </td>
+                    <td th:text="${employee.email}">jane.doe@example.com</td>
+                    <td th:text="${employee.department.name}">Engineering</td>
+                    <td th:text="${#temporals.format(employee.hireDate, 'MMM d, yyyy')}">Jan 1, 2020</td>
+                    <td class="text-end text-nowrap">
+                        <a class="btn btn-sm btn-outline-secondary"
+                           th:href="@{/employees/{id}(id=${employee.id})}">View</a>
+                        <a class="btn btn-sm btn-outline-primary"
+                           th:href="@{/employees/{id}/edit(id=${employee.id})}">Edit</a>
+                        <!-- Delete is a POST form, not a link, so it cannot fire from a prefetch. -->
+                        <form class="d-inline"
+                              th:action="@{/employees/{id}/delete(id=${employee.id})}"
+                              method="post"
+                              onsubmit="return confirm(&#39;Delete this employee? This cannot be undone.&#39;)">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <p class="text-muted small mt-3">
+        <span th:text="${employees.size()}">0</span> employee(s) on record.
+    </p>
+
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+
+</body>
+</html>

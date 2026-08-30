@@ -1,0 +1,36 @@
+# Local MySQL for development, so MySQL does not need to be installed on the machine.
+#
+#   docker compose up -d      start the database
+#   docker compose down       stop it, keeping the data
+#   docker compose down -v    stop it and wipe the data (Flyway reseeds on next boot)
+#
+# The credentials here are local-development only and match the defaults in
+# src/main/resources/application.properties. Cloud deployments supply their own
+# values through environment variables and never use these.
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: employee-manager-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_pw
+      MYSQL_DATABASE: employeedb
+      MYSQL_USER: employee_app
+      MYSQL_PASSWORD: employee_app_pw
+    ports:
+      # host:container - change the host side if 3306 is already in use locally.
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      # Lets `docker compose up --wait` block until MySQL actually accepts connections,
+      # which takes noticeably longer than the container taking a few seconds to start.
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot_pw"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+volumes:
+  mysql-data:

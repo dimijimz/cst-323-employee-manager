@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!-- Spring Boot resolves this automatically for any unhandled error status. -->
+<head th:replace="~{fragments/layout :: head('Error')}"></head>
+<body class="bg-body-tertiary">
+
+<nav th:replace="~{fragments/layout :: navbar('')}"></nav>
+
+<main class="container">
+    <div class="card shadow-sm">
+        <div class="card-body text-center py-5">
+            <h1 class="display-6" th:text="${status} ?: 'Error'">404</h1>
+            <p class="lead" th:text="${error} ?: 'Something went wrong.'">Not Found</p>
+            <p class="text-muted" th:if="${message}" th:text="${message}"></p>
+            <a class="btn btn-primary" th:href="@{/employees}">Back to employees</a>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+
+</body>
+</html>

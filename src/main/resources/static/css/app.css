@@ -1,0 +1,25 @@
+/* Small additions on top of Bootstrap 5. Kept deliberately thin: the CDN
+   stylesheet does the heavy lifting so nothing large ships inside the jar. */
+
+body {
+    min-height: 100vh;
+}
+
+main {
+    padding-bottom: 2rem;
+}
+
+.card-title {
+    margin-bottom: 0.75rem;
+}
+
+dl.row dt {
+    font-weight: 600;
+}
+
+/* Bootstrap only reveals .invalid-feedback next to an .is-invalid control, and
+   the department select renders its error in a sibling div, so make sure the
+   message is visible in both arrangements. */
+.invalid-feedback[data-shown="true"] {
+    display: block;
+}

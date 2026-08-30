@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Home')}"></head>
+<body class="bg-body-tertiary">
+
+<nav th:replace="~{fragments/layout :: navbar('home')}"></nav>
+
+<main class="container">
+
+    <div class="p-5 mb-4 bg-white border rounded-3 shadow-sm">
+        <h1 class="display-6">Employee Manager</h1>
+        <p class="lead mb-0">
+            A deliberately small Spring Boot CRUD application built for CST-323 Cloud Computing.
+            The feature set is minimal on purpose: the point of the project is to redeploy the
+            same codebase onto multiple cloud platforms, starting with Microsoft Azure, and to
+            compare what each platform asks of the application.
+        </p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h2 class="h5 card-title">What it does</h2>
+                    <p class="card-text">
+                        The application manages employees and the departments they belong to,
+                        a one-to-many relationship persisted in MySQL through Spring Data JPA.
+                        All four CRUD operations are reachable from the UI.
+                    </p>
+                    <ul class="list-unstyled mb-3">
+                        <li><strong>Create</strong> &mdash; add an employee from the shared form</li>
+                        <li><strong>Read</strong> &mdash; browse the roster or open one employee</li>
+                        <li><strong>Update</strong> &mdash; edit an existing employee</li>
+                        <li><strong>Delete</strong> &mdash; remove an employee from the roster</li>
+                    </ul>
+                    <a class="btn btn-primary" th:href="@{/employees}">Browse employees</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h2 class="h5 card-title">Built for portability</h2>
+                    <p class="card-text">
+                        Nothing environment-specific is compiled into the jar. Each deployment
+                        target supplies its own values and the application adapts.
+                    </p>
+                    <ul class="list-unstyled mb-0">
+                        <li><strong>Java 17 &middot; Spring Boot 3</strong> &mdash; single executable jar</li>
+                        <li><strong>Externalized config</strong> &mdash; database host, name and
+                            credentials all read from environment variables</li>
+                        <li><strong>Flyway migrations</strong> &mdash; the schema and seed data
+                            rebuild themselves on a brand new database</li>
+                        <li><strong>SLF4J logging</strong> &mdash; every CRUD operation logged at
+                            INFO to stdout, where cloud log collectors can read it</li>
+                        <li><strong>Health endpoints</strong> &mdash;
+                            <a th:href="@{/health}">/health</a> for liveness and
+                            <a th:href="@{/actuator/health}">/actuator/health</a> for readiness</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+
+</body>
+</html>
