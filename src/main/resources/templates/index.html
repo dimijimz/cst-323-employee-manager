@@ -28,10 +28,10 @@
                         All four CRUD operations are reachable from the UI.
                     </p>
                     <ul class="list-unstyled mb-3">
-                        <li><strong>Create</strong> &mdash; add an employee from the shared form</li>
-                        <li><strong>Read</strong> &mdash; browse the roster or open one employee</li>
-                        <li><strong>Update</strong> &mdash; edit an existing employee</li>
-                        <li><strong>Delete</strong> &mdash; remove an employee from the roster</li>
+                        <li><strong>Create</strong> - add an employee from the shared form</li>
+                        <li><strong>Read</strong> - browse the roster or open one employee</li>
+                        <li><strong>Update</strong> - edit an existing employee</li>
+                        <li><strong>Delete</strong> - remove an employee from the roster</li>
                     </ul>
                     <a class="btn btn-primary" th:href="@{/employees}">Browse employees</a>
                 </div>
@@ -47,14 +47,14 @@
                         target supplies its own values and the application adapts.
                     </p>
                     <ul class="list-unstyled mb-0">
-                        <li><strong>Java 17 &middot; Spring Boot 3</strong> &mdash; single executable jar</li>
-                        <li><strong>Externalized config</strong> &mdash; database host, name and
+                        <li><strong>Java 17 &middot; Spring Boot 3</strong> - single executable jar</li>
+                        <li><strong>Externalized config</strong> - database host, name and
                             credentials all read from environment variables</li>
-                        <li><strong>Flyway migrations</strong> &mdash; the schema and seed data
+                        <li><strong>Flyway migrations</strong> - the schema and seed data
                             rebuild themselves on a brand new database</li>
-                        <li><strong>SLF4J logging</strong> &mdash; every CRUD operation logged at
+                        <li><strong>SLF4J logging</strong> - every CRUD operation logged at
                             INFO to stdout, where cloud log collectors can read it</li>
-                        <li><strong>Health endpoints</strong> &mdash;
+                        <li><strong>Health endpoints</strong> -
                             <a th:href="@{/health}">/health</a> for liveness and
                             <a th:href="@{/actuator/health}">/actuator/health</a> for readiness</li>
                     </ul>

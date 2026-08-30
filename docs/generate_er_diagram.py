@@ -117,7 +117,7 @@ ax.text(RX - 26, -20, "0..N", ha="center", va="center", fontsize=8.8,
         family=SANS, color=SUBTLE)
 
 cx = content_w / 2.0
-ax.text(cx, TITLE_Y, "Employee Manager \u2014 Database Schema", ha="center",
+ax.text(cx, TITLE_Y, "Employee Manager - Database Schema", ha="center",
         va="center", fontsize=F_TITLE, fontweight="bold", family=SANS, color=INK)
 ax.text(cx, SUB_Y, "MySQL 8 / InnoDB, utf8mb4  \u00b7  generated from V1__create_schema.sql",
         ha="center", va="center", fontsize=F_SUB, family=SANS, color=SUBTLE)

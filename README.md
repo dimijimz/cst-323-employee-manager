@@ -5,8 +5,8 @@ A small Spring Boot CRUD web application built for **CST-323 Cloud Computing**.
 The feature set is intentionally minimal. The point of the project is not the
 application itself but moving it, unchanged, onto a series of cloud platforms
 (Azure first) and observing what each platform asks of it. Everything that varies
-between environments — database host, database name, credentials, HTTP port, TLS
-mode — is read from environment variables, so the same jar runs everywhere.
+between environments - database host, database name, credentials, HTTP port, TLS
+mode - is read from environment variables, so the same jar runs everywhere.
 
 ## Domain
 
@@ -23,7 +23,7 @@ Department (1) ──────< (many) Employee
 |------------|----------------------------------------------|
 | Language   | Java 17                                      |
 | Framework  | Spring Boot 3.4                              |
-| Build      | Maven (wrapper included — no local install)  |
+| Build      | Maven (wrapper included - no local install)  |
 | Web        | Spring MVC + Thymeleaf                       |
 | Styling    | Bootstrap 5 via CDN                          |
 | Data       | Spring Data JPA / Hibernate                  |
@@ -35,7 +35,7 @@ Department (1) ──────< (many) Employee
 ## Prerequisites
 
 - **JDK 17 or newer** (`java -version`)
-- **Docker Desktop** — only to run MySQL locally. If MySQL is already installed
+- **Docker Desktop** - only to run MySQL locally. If MySQL is already installed
   natively, skip Docker and point the environment variables at that instance.
 
 Maven itself is **not** required: `mvnw` / `mvnw.cmd` download it on first use.
@@ -48,7 +48,7 @@ Start the database:
 docker compose up -d --wait
 ```
 
-Then run the app. `DB_PASSWORD` has no default, so it has to be supplied — for local
+Then run the app. `DB_PASSWORD` has no default, so it has to be supplied - for local
 development that is the password `docker-compose.yml` gives the container:
 
 ```bash
@@ -61,7 +61,7 @@ In PowerShell:
 $env:DB_PASSWORD = 'employee_app_pw'; .\mvnw.cmd spring-boot:run
 ```
 
-Leaving `DB_PASSWORD` unset is not a silent failure — the app refuses to start and
+Leaving `DB_PASSWORD` unset is not a silent failure - the app refuses to start and
 says `Could not resolve placeholder 'DB_PASSWORD'`. That is deliberate; see
 [Configuration](#configuration).
 
@@ -83,7 +83,7 @@ reseed the schema the next time the application starts.
 
 | URL                     | Method   | Purpose                                    |
 |-------------------------|----------|--------------------------------------------|
-| `/`                     | GET      | Home — project description and navigation  |
+| `/`                     | GET      | Home - project description and navigation  |
 | `/employees`            | GET      | All employees, with Edit and Delete buttons |
 | `/employees/new`        | GET      | Blank form (shared template)               |
 | `/employees`            | POST     | **Create**                                  |
@@ -91,8 +91,8 @@ reseed the schema the next time the application starts.
 | `/employees/{id}/edit`  | GET      | Populated form (same shared template)      |
 | `/employees/{id}`       | POST     | **Update**                                  |
 | `/employees/{id}/delete`| POST     | **Delete** (POST so a link prefetch cannot fire it) |
-| `/health`               | GET      | Liveness probe — JSON, does not touch the DB |
-| `/actuator/health`      | GET      | Readiness probe — includes DB connectivity  |
+| `/health`               | GET      | Liveness probe - JSON, does not touch the DB |
+| `/actuator/health`      | GET      | Readiness probe - includes DB connectivity  |
 | `/actuator/info`        | GET      | Build and application metadata              |
 
 All four CRUD operations are reachable from the UI: **Add Employee** in the nav
@@ -110,7 +110,7 @@ defined in `src/main/resources/application.properties`.
 | `DB_PORT`               | `3306`             | Database port                                   |
 | `DB_NAME`               | `employeedb`       | Schema name                                     |
 | `DB_USER`               | `employee_app`     | Database user                                   |
-| `DB_PASSWORD`           | **none — required** | Database password. No fallback; unset fails at startup |
+| `DB_PASSWORD`           | **none - required** | Database password. No fallback; unset fails at startup |
 | `DB_SSL_MODE`           | `DISABLED`         | `REQUIRED` for managed MySQL such as Azure      |
 | `DB_POOL_MAX`           | `10`               | Maximum Hikari pool size                        |
 | `DB_POOL_MIN`           | `2`                | Minimum idle connections                        |
@@ -144,7 +144,7 @@ defined in `src/main/resources/application.properties`.
 >
 > An intentionally empty password is still allowed: set `DB_PASSWORD=` explicitly.
 >
-> Supply it from the platform's secret store — Azure App Service application settings,
+> Supply it from the platform's secret store - Azure App Service application settings,
 > Key Vault references, container secrets, and so on. The remaining defaults are for
 > local development only and match `docker-compose.yml`.
 >
@@ -162,9 +162,9 @@ DB_HOST=my-server.mysql.database.azure.com DB_SSL_MODE=REQUIRED DB_USER=appuser 
 Flyway owns the schema; Hibernate is set to `validate` and never alters tables.
 Migrations live in `src/main/resources/db/migration`:
 
-- `V1__create_schema.sql` — the `department` and `employee` tables plus the
+- `V1__create_schema.sql` - the `department` and `employee` tables plus the
   foreign key between them
-- `V2__seed_data.sql` — four departments and six employees
+- `V2__seed_data.sql` - four departments and six employees
 
 Flyway records what it has applied in a `flyway_schema_history` table, so pointing
 the app at a fresh cloud database provisions it automatically, and pointing it at
@@ -190,8 +190,8 @@ CRUD operation is logged at **INFO** by `EmployeeService`:
 ```
 
 Output goes to the console only. That is deliberate: cloud instances are
-disposable and their local disks are not durable, so stdout — which every
-platform's log collector already reads — is the one destination that works
+disposable and their local disks are not durable, so stdout - which every
+platform's log collector already reads - is the one destination that works
 unchanged on all of them.
 
 ## Tests
